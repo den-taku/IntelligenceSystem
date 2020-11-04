@@ -9,32 +9,37 @@ fn judge_winner_call_n_game(n: usize, m: usize) -> String {
 }
 
 fn the_first_caller_is_winner(n: usize, m: usize) -> bool {
-    rec_value(n, m, 0, true)
+    rec_value(n, m, 0, false)
 }
 
 // true : the first caller, false : the seconed caller
-fn rec_value(n: usize, m: usize, parant: usize, turn_is_first: bool) -> bool {
+fn rec_value(n: usize, m: usize, parant: usize, parant_turn_is_first: bool) -> bool {
     let mut children = Vec::new();
     for i in 0..m {
         // println!("{}, {}", parant, i);
         if parant + i + 1 == n {
-            children.push(!turn_is_first);
+            // println!("{} {} {}", parant, parant + i+1, !turn_is_first);
+            children.push(parant_turn_is_first);
             break;
         }
-        children.push(rec_value(n, m, parant + i + 1, !turn_is_first))
+        let buf =rec_value(n, m, parant + i + 1, !parant_turn_is_first) ;
+        // println!("{} {} {}", parant, parant + i+1, buf);
+        children.push(buf);
     }
-    if turn_is_first {
-        first_judge(children)
+    if parant == 0 {
+        second_judge_result(children)
+    } else if parant_turn_is_first {
+        first_judge_result(children)
     } else {
-        second_judge(children)
+        second_judge_result(children)
     }
 }
 
-fn first_judge(v: Vec<bool>) -> bool {
-    v.iter().any(|e| !*e)
+fn first_judge_result(v: Vec<bool>) -> bool {
+    !v.iter().any(|e| !*e)
 }
 
-fn second_judge(v: Vec<bool>) -> bool {
+fn second_judge_result(v: Vec<bool>) -> bool {
     v.iter().any(|e| *e)
 }
 
@@ -66,7 +71,7 @@ mod tests_call_n_game {
         // check N =  6,..,21 and M = 4
         for i in 6..22 {
             println!("{}", i);
-            assert_eq!(the_first_caller_is_winner(i, 4), !i % 5 == 1);
+            assert_eq!(the_first_caller_is_winner(i, 4), !(i % 5 == 1));
         }
         // assert_eq!(the_first_caller_is_winner(6, 4), false)
     }
