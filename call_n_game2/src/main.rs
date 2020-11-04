@@ -1,28 +1,84 @@
 #![allow(dead_code)]
 
-fn judge_winner_call_n_game(n: usize, m: usize) -> String {
-    if the_first_caller_is_winner(n, m) {
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+
+fn judge_winner_call_n_game2(n: usize, m: usize) -> String {
+    if the_first_caller_is_winner2(n, m) {
         "The first caller".to_string()
     } else {
         "The second caller".to_string()
     }
 }
 
-fn the_first_caller_is_winner(n: usize, m: usize) -> bool {
-    rec_value(n, m, 0, false)
+fn the_first_caller_is_winner2(n: usize, m: usize) -> bool {
+    let first_note = Rc::new(RefCell::new(HashMap::new()));
+    let second_note = Rc::new(RefCell::new(HashMap::new()));
+    rec_value2(n, m, 0, false, first_note, second_note)
 }
 
 // true : the first caller, false : the seconed caller
-fn rec_value(n: usize, m: usize, parant: usize, parant_turn_is_first: bool) -> bool {
+fn rec_value2(
+    n: usize,
+    m: usize,
+    parant: usize,
+    parant_turn_is_first: bool,
+    first_note: Rc<RefCell<HashMap<usize, bool>>>,
+    second_note: Rc<RefCell<HashMap<usize, bool>>>,
+) -> bool {
     let mut children = Vec::new();
-    for i in 0..m {
-        if parant + i + 1 == n {
-            children.push(parant_turn_is_first);
-            break;
+
+    if parant_turn_is_first {
+        for i in 0..m {
+            if parant + i + 1 == n {
+                children.push(parant_turn_is_first);
+                break;
+            }
+            let mut flag = true;
+            if let Some(value) = first_note.borrow().get(&(parant + i + 1)) {
+                children.push(*value);
+                flag = false;
+            }
+            if flag {
+                let value = rec_value2(
+                    n,
+                    m,
+                    parant + i + 1,
+                    !parant_turn_is_first,
+                    first_note.clone(),
+                    second_note.clone(),
+                );
+                first_note.borrow_mut().insert(parant + i + 1, value);
+                children.push(value);
+            }
         }
-        let buf =rec_value(n, m, parant + i + 1, !parant_turn_is_first) ;
-        children.push(buf);
+    } else {
+        for i in 0..m {
+            if parant + i + 1 == n {
+                children.push(parant_turn_is_first);
+                break;
+            }
+            let mut flag = true;
+            if let Some(value) = second_note.borrow().get(&(parant + i + 1)) {
+                children.push(*value);
+                flag = false;
+            }
+            if flag {
+                let value = rec_value2(
+                    n,
+                    m,
+                    parant + i + 1,
+                    !parant_turn_is_first,
+                    first_note.clone(),
+                    second_note.clone(),
+                );
+                second_note.borrow_mut().insert(parant + i + 1, value);
+                children.push(value);
+            }
+        }
     }
+
     if parant == 0 {
         second_judge_result(children)
     } else if parant_turn_is_first {
@@ -41,19 +97,23 @@ fn second_judge_result(v: Vec<bool>) -> bool {
 }
 fn main() {
     for i in 6..22 {
-        println!("When N is {:2.} and M is 4, the Winner is {}", i, judge_winner_call_n_game(i, 4));
+        println!(
+            "When N is {:2.} and M is 4, the Winner is {}",
+            i,
+            judge_winner_call_n_game2(i, 4)
+        );
     }
 }
 
 #[cfg(test)]
 mod tests_call_n_game {
-    use super::the_first_caller_is_winner;
+    use super::the_first_caller_is_winner2;
     #[test]
-    fn test_the_first_caller_is_winner() {
+    fn test_the_first_caller_is_winner2() {
         // check N =  6,..,21 and M = 4
         for i in 6..22 {
             println!("{}", i);
-            assert_eq!(the_first_caller_is_winner(i, 4), !(i % 5 == 1));
+            assert_eq!(the_first_caller_is_winner2(i, 4), !(i % 5 == 1));
         }
     }
 }

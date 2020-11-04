@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use std::time::Instant;
+
 fn judge_winner_call_n_game(n: usize, m: usize) -> String {
     if the_first_caller_is_winner(n, m) {
         "The first caller".to_string()
@@ -20,7 +22,7 @@ fn rec_value(n: usize, m: usize, parant: usize, parant_turn_is_first: bool) -> b
             children.push(parant_turn_is_first);
             break;
         }
-        let buf =rec_value(n, m, parant + i + 1, !parant_turn_is_first) ;
+        let buf = rec_value(n, m, parant + i + 1, !parant_turn_is_first);
         children.push(buf);
     }
     if parant == 0 {
@@ -40,9 +42,23 @@ fn second_judge_result(v: Vec<bool>) -> bool {
     v.iter().any(|e| *e)
 }
 fn main() {
+    let mut sum_sec = 0.0;
     for i in 6..22 {
-        println!("When N is {:2.} and M is 4, the Winner is {}", i, judge_winner_call_n_game(i, 4));
+        println!(
+            "When N is {:2.} and M is 4, the Winner is {}",
+            i,
+            judge_winner_call_n_game(i, 4)
+        );
     }
+    for _ in 0..100 {
+        for i in 6..22 {
+            let start = Instant::now();
+            let _ = judge_winner_call_n_game(i, 4);
+            let end = start.elapsed();
+            sum_sec += end.as_secs_f32();
+        }
+    }
+    println!("average run time cost is {}s", sum_sec / 100.);
 }
 
 #[cfg(test)]
@@ -73,4 +89,3 @@ mod tests_call_n_game {
 //         Some(*v.iter().max().unwrap())
 //     }
 // }
-
