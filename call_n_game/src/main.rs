@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use std::time::Instant;
+// use std::time::Instant;
 
 fn judge_winner_call_n_game(n: usize, m: usize) -> String {
     if the_first_caller_is_winner(n, m) {
@@ -50,19 +50,19 @@ fn main() {
         );
     }
 
-    let mut sum_sec = vec![0.0; 16];
-    for _ in 0..100{
-        for i in 6..22 {
-            let start = Instant::now();
-            let _ = judge_winner_call_n_game(i, 4);
-            let end = start.elapsed();
-            sum_sec[i-6] += end.as_secs_f32();
-        }
-    }
-    for i in 0..16 {
-        sum_sec[i] /= 100.0;
-        println!("When N: {:2.} and M: 4, Average Run Time is {}s", i + 6, sum_sec[i]);
-    }
+    // let mut sum_sec = vec![0.0; 16];
+    // for _ in 0..100{
+    //     for i in 6..22 {
+    //         let start = Instant::now();
+    //         let _ = judge_winner_call_n_game(i, 4);
+    //         let end = start.elapsed();
+    //         sum_sec[i-6] += end.as_secs_f32();
+    //     }
+    // }
+    // for i in 0..16 {
+    //     sum_sec[i] /= 100.0;
+    //     println!("When N: {:2.} and M: 4, Average Run Time is {}s", i + 6, sum_sec[i]);
+    // }
     // println!("average run time cost is {}s", sum_sec / 100.);
 }
 
