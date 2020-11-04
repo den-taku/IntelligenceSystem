@@ -3,7 +3,7 @@
 use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::time::Instant;
+// use std::time::Instant;
 
 fn judge_winner_call_n_game2(n: usize, m: usize) -> String {
     if the_first_caller_is_winner2(n, m) {
