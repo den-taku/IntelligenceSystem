@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 
 // use std::time::Instant;
+use std::rc::Rc;
+use std::cell::Cell;
 
 fn judge_winner_call_n_game(n: usize, m: usize) -> String {
     if the_first_caller_is_winner(n, m) {
@@ -11,18 +13,27 @@ fn judge_winner_call_n_game(n: usize, m: usize) -> String {
 }
 
 fn the_first_caller_is_winner(n: usize, m: usize) -> bool {
-    rec_value(n, m, 0, false)
+    let count = Rc::new(Cell::new(0usize));
+    let value = rec_value(n, m, 0, false, count.clone());
+    println!("count : {}", count.get());
+    value
 }
 
 // true : the first caller, false : the seconed caller
-fn rec_value(n: usize, m: usize, parant: usize, parant_turn_is_first: bool) -> bool {
+fn rec_value(n: usize, m: usize, parant: usize, parant_turn_is_first: bool, count: Rc<Cell<usize>>) -> bool {
     let mut children = Vec::new();
     for i in 0..m {
         if parant + i + 1 == n {
             children.push(parant_turn_is_first);
+            let new = count.get() + 1;
+            count.set(new);
             break;
         }
-        let buf = rec_value(n, m, parant + i + 1, !parant_turn_is_first);
+        {
+            let new = count.get() + 1;
+            count.set(new);
+        }
+        let buf = rec_value(n, m, parant + i + 1, !parant_turn_is_first, count.clone());
         children.push(buf);
     }
     if parant == 0 {
