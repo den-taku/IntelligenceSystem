@@ -35,7 +35,7 @@ impl QValue {
     pub fn new(init: f32, signals: &[[f32; 4]; 36]) -> Self {
         QValue {value: [init; 36], reinforcement_signals: *signals}
     }
-    fn q_learning(&mut self, leaning_rate: f32, now_position: &Coordinate2d, next_position: Coordinate2d) {
+    fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_position: Coordinate2d) {
         unimplemented!()
     }
     fn get_reiforcement_signal(&self, from_position: &Coordinate2d, to_position: &Coordinate2d) -> f32 {
@@ -50,11 +50,11 @@ impl QValue {
         goal: Coordinate2d,
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
-        learning_rate: f32
+        learning_rate: &mut LearningRate,
+        times: usize // initialize as 1usize
     ) {
-        let t = 0usize;
         let mut now_position = start;
-        self.q_serch_goal_inner(&mut now_position, goal, action_determiner.clone(), next_state_determiner.clone(), learning_rate, 1);
+        self.q_serch_goal_inner(&mut now_position, goal, action_determiner.clone(), next_state_determiner.clone(), learning_rate, times);
     }
     
     fn q_serch_goal_inner(
@@ -63,19 +63,37 @@ impl QValue {
         goal: Coordinate2d,
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
-        learning_rate: f32,
-        times: usize
+        learning_rate: &mut LearningRate,
+        mut times: usize
     ) {
         loop{
             if *now_position == goal { return; }
             let next_action = action_determiner.borrow().decide_action(&now_position);
             let next_position = next_state_determiner.decide_next_state(&now_position, next_action);
             let reinfocement_signal = self.get_reiforcement_signal(&now_position, &next_action);
-            self.q_learning(learning_rate, now_position, next_position);
+            self.q_learning(*learning_rate, now_position, next_position);
+            *now_position = next_position;
+            times += 1;
+            learning_rate.update(times)
             
             //
         }
         unimplemented!()
+    }
+}
+
+// 0: learinig rate, 1: τ s.t. learing rate = 2 - exp(t/τ)
+#[derive(Debug, Copy, Clone)]
+pub struct LearningRate(f32, f32);
+
+impl LearningRate {
+    pub fn new(init: f32, time_constant: f32) -> Self {
+        LearningRate(init, time_constant)
+    }
+    fn update(&mut self, times: usize) {
+        let e = 2.71828182846f32;
+        let new_rate = 2.0 - e.powf(times as f32 / self.1);
+        self.0 = if new_rate > 0 { new_rate } else { 0.001 }; // learning rate defined
     }
 }
 
