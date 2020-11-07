@@ -27,13 +27,13 @@ impl Coordinate2d {
 
 #[derive(Copy, Clone)]
 pub struct QValue {
-    value: [f32; 36], // this time 6x6
+    value: [[f32; 4]; 36], // this time 6x6
     reinforcement_signals: [[f32; 4]; 36] // A = {N, E, S, W}
 }
 
 impl QValue {
     pub fn new(init: f32, signals: &[[f32; 4]; 36]) -> Self {
-        QValue {value: [init; 36], reinforcement_signals: *signals}
+        QValue {value: [[init; 4]; 36], reinforcement_signals: *signals}
     }
     fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_position: Coordinate2d) {
         unimplemented!()
@@ -93,7 +93,7 @@ impl LearningRate {
     fn update(&mut self, times: usize) {
         let e = 2.71828182846f32;
         let new_rate = 2.0 - e.powf(times as f32 / self.1);
-        self.0 = if new_rate > 0 { new_rate } else { 0.001 }; // learning rate defined
+        self.0 = if new_rate > 0.0 { new_rate } else { 0.001 }; // learning rate defined
     }
 }
 
