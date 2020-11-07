@@ -45,6 +45,9 @@ struct EpsironGreedy {
 
 impl EpsironGreedy {
     fn new(epsiron: f32, q_value: Rc<RefCell<QValue>>) -> Self {
+        if !(0.0 < epsiron && epsiron < 1.0) {
+            panic!("EpsironGreedy::new needs epsiron: 0 < ε < 1");
+        }
         EpsironGreedy{epsiron, q_value}
     }
     fn update_epsiron(&mut self, new_value: f32) {
@@ -115,5 +118,11 @@ mod test{
     fn test_epsiron_greedy_update_epsiron() {
         let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(&[[0.0; 4]; 36]))));
         dummy_epsiron_greedy.update_epsiron(8.0);
+    }
+    
+    #[test]
+    #[should_panic(expected = "EpsironGreedy::new needs epsiron: 0 < ε < 1")]
+    fn test_epsiron_greedy_new() {
+        let _ = EpsironGreedy::new(1.0, Rc::new(RefCell::new(QValue::new(&[[0.0; 4]; 36]))));
     }
 }
