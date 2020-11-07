@@ -62,11 +62,18 @@ impl DecideAction for EpsironGreedy {
     fn decide_action(&self, now_position: Coordinate2d) -> Coordinate2d{
         unimplemented!()
     }
+    fn update_parameter(&mut self, new_value: f32) {
+        if !(0.0 < new_value && new_value < 1.0) {
+            panic!("EpsironGreedy::update_parameter needs epsion: 0 < ε < 1");
+        }
+        self.epsiron = new_value
+    }
 }
 
 // decide next action using ε-Greedy, softmax, and so-on.
 trait DecideAction {
     fn decide_action(&self, now_position: Coordinate2d) -> Coordinate2d;
+    fn update_parameter(&mut self, new_value: f32);
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -86,21 +93,30 @@ trait DecideState {
 fn q_search_goal(
     start: Coordinate2d,
     goal: Coordinate2d,
-    action_determiner: Rc<dyn DecideAction>,
+    action_determiner: Rc<RefCell<dyn DecideAction>>,
     state_determiner: Rc<dyn DecideState>
 ) {
     unimplemented!();
 }
 
-fn serch_goal_1() {
+// episode : 1-index
+fn serch_goal_1(episode: usize) {
     //initialize Q value
     let reinforcement_signals = maze::get_maze1();
     let q = Rc::new(RefCell::new(QValue::new(&reinforcement_signals)));
     let start = Coordinate2d::new(0, 0);
     let goal = Coordinate2d::new(4, 3);
-    let epsiron = 0.1;
-    let action_determiner: Rc<dyn DecideAction> = Rc::new(EpsironGreedy::new(epsiron, q.clone()));
-    let state_determiner: Rc<dyn DecideState> = Rc::new(SearchGoal{});
+    let epsiron = 0.75;
+    let action_determiner = Rc::new(RefCell::new(EpsironGreedy::new(epsiron, q.clone())));
+    let state_determiner = Rc::new(SearchGoal{});
+
+    q_search_goal(start, goal, action_determiner.clone(), state_determiner);
+
+    for _ in 1..episode {
+        //
+        let new_epsiron = 0.1;
+        action_determiner.borrow_mut().update_parameter(new_epsiron);
+    }
     
     
     unimplemented!();
@@ -110,6 +126,7 @@ fn serch_goal_1() {
 mod test{
     use crate::search_goal::EpsironGreedy;
     use crate::search_goal::QValue;
+    use crate::search_goal::DecideAction;
     use std::rc::Rc;
     use std::cell::RefCell;
 
@@ -118,6 +135,13 @@ mod test{
     fn test_epsiron_greedy_update_epsiron() {
         let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(&[[0.0; 4]; 36]))));
         dummy_epsiron_greedy.update_epsiron(8.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "EpsironGreedy::update_parameter needs epsion: 0 < ε < 1")]
+    fn test_epsiron_greedy_update_parameter_inner() {
+        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(&[[0.0; 4]; 36]))));
+        dummy_epsiron_greedy.update_parameter(8.0);
     }
     
     #[test]
