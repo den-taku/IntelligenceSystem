@@ -36,13 +36,17 @@ impl QValue {
     pub fn new(init: f32, signals: &[[f32; 4]; 36], discount_rate: f32) -> Self {
         QValue {value: [[init; 4]; 36], reinforcement_signals: *signals, discount_rate}
     }
-    fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_action: Coordinate2d, next_position: Coordinate2d) {
+    fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_action: Coordinate2d, next_position: Coordinate2d, reinforcment_signal: f32) {
         let past_value = self.value[now_position.x + now_position.y * 6][
             if now_position.x == next_action.x { next_action.y - now_position.y + 1}
             else { now_position.x - next_action.x + 2}
         ];
         let alpha = leaning_rate.value();
-        unimplemented!()
+        let next_value = self.value[next_position.x + next_position.y * 6].iter().fold(0.0, |max, e| { if max >= *e { max } else { *e } });
+        self.value[now_position.x + now_position.y * 6][
+            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
+            else { now_position.x - next_action.x + 2}
+        ] = (1.0 - alpha) * past_value + alpha * (reinforcment_signal * self.discount_rate * next_value);
     }
     fn get_reiforcement_signal(&self, from_position: &Coordinate2d, to_position: &Coordinate2d) -> f32 {
         self.reinforcement_signals[from_position.x + from_position.y * 6][
@@ -77,14 +81,11 @@ impl QValue {
             let next_action = action_determiner.borrow().decide_action(&now_position);
             let next_position = next_state_determiner.decide_next_state(&now_position, next_action);
             let reinfocement_signal = self.get_reiforcement_signal(&now_position, &next_action);
-            self.q_learning(*learning_rate, now_position, next_action, next_position);
+            self.q_learning(*learning_rate, now_position, next_action, next_position, reinfocement_signal);
             *now_position = next_position;
             times += 1;
             learning_rate.update(times)
-            
-            //
         }
-        unimplemented!()
     }
 }
 
