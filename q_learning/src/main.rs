@@ -10,7 +10,7 @@ use search_goal::*;
 
 fn main() {
     let reinforcement_signals = maze::get_maze1();
-    let q = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals)));
+    let q = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals, 0.9)));
     let start = Coordinate2d::new(0, 0);
     let goal1 = Coordinate2d::new(4, 3);
     let mut epsiron = 0.75;

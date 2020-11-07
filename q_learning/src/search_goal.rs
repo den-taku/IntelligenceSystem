@@ -28,14 +28,20 @@ impl Coordinate2d {
 #[derive(Copy, Clone)]
 pub struct QValue {
     value: [[f32; 4]; 36], // this time 6x6
-    reinforcement_signals: [[f32; 4]; 36] // A = {N, E, S, W}
+    reinforcement_signals: [[f32; 4]; 36], // A = {N, E, S, W}
+    discount_rate: f32
 }
 
 impl QValue {
-    pub fn new(init: f32, signals: &[[f32; 4]; 36]) -> Self {
-        QValue {value: [[init; 4]; 36], reinforcement_signals: *signals}
+    pub fn new(init: f32, signals: &[[f32; 4]; 36], discount_rate: f32) -> Self {
+        QValue {value: [[init; 4]; 36], reinforcement_signals: *signals, discount_rate}
     }
-    fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_position: Coordinate2d) {
+    fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_action: Coordinate2d, next_position: Coordinate2d) {
+        let past_value = self.value[now_position.x + now_position.y * 6][
+            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
+            else { now_position.x - next_action.x + 2}
+        ];
+        let alpha = leaning_rate.value();
         unimplemented!()
     }
     fn get_reiforcement_signal(&self, from_position: &Coordinate2d, to_position: &Coordinate2d) -> f32 {
@@ -71,7 +77,7 @@ impl QValue {
             let next_action = action_determiner.borrow().decide_action(&now_position);
             let next_position = next_state_determiner.decide_next_state(&now_position, next_action);
             let reinfocement_signal = self.get_reiforcement_signal(&now_position, &next_action);
-            self.q_learning(*learning_rate, now_position, next_position);
+            self.q_learning(*learning_rate, now_position, next_action, next_position);
             *now_position = next_position;
             times += 1;
             learning_rate.update(times)
@@ -94,6 +100,9 @@ impl LearningRate {
         let e = 2.71828182846f32;
         let new_rate = 2.0 - e.powf(times as f32 / self.1);
         self.0 = if new_rate > 0.0 { new_rate } else { 0.001 }; // learning rate defined
+    }
+    pub fn value(&self) -> f32 {
+        self.0
     }
 }
 
@@ -188,20 +197,20 @@ mod test{
     #[test]
     #[should_panic(expected = "EpsironGreedy::update_epsiron needs epsion: 0 < ε < 1")]
     fn test_epsiron_greedy_update_epsiron() {
-        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36]))));
+        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
         dummy_epsiron_greedy.update_epsiron(8.0);
     }
 
     #[test]
     #[should_panic(expected = "EpsironGreedy::update_parameter needs epsion: 0 < ε < 1")]
     fn test_epsiron_greedy_update_parameter_inner() {
-        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36]))));
+        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
         dummy_epsiron_greedy.update_parameter(8.0);
     }
     
     #[test]
     #[should_panic(expected = "EpsironGreedy::new needs epsiron: 0 < ε < 1")]
     fn test_epsiron_greedy_new() {
-        let _ = EpsironGreedy::new(1.0, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36]))));
+        let _ = EpsironGreedy::new(1.0, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
     }
 }
