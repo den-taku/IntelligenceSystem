@@ -177,13 +177,28 @@ pub trait DecideAction {
     fn update_parameter(&mut self, new_value: f64);
 }
 
-#[derive(Debug, Clone, Copy)]
-pub struct SearchGoal {}
+#[derive(Clone)]
+pub struct SearchGoal {
+    q_value: Rc<RefCell<QValue>>
+}
+
+impl SearchGoal {
+    pub fn new(q_value: Rc<RefCell<QValue>>) -> Self {
+        SearchGoal{q_value}
+    }
+}
 
 impl DecideNextState for SearchGoal {
-    fn decide_next_state(&self, now_position: &Coordinate2d, next_position: Coordinate2d) -> Coordinate2d {
-        
-        unimplemented!()
+    fn decide_next_state(&self, now_position: &Coordinate2d, next_action: Coordinate2d) -> Coordinate2d {
+        let reinforcement_signal = self.q_value.borrow().value[now_position.x + now_position.y * 6][
+            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
+            else { now_position.x - next_action.x + 2}
+        ];
+        if reinforcement_signal == -0.1 {
+            *now_position
+        } else {
+            next_action
+        }
     }
 }
 
