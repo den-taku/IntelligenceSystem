@@ -35,6 +35,9 @@ impl QValue {
     fn new(signals: &[[f32; 4]; 36]) -> Self {
         QValue {value: [0.0; 36], reinforcement_signals: *signals}
     }
+    fn q_learning(&mut self, leaning_rate: f32, now_position: Coordinate2d, next_position: Coordinate2d) {
+        unimplemented!()
+    }
 }
 
 // decide next action with ε-Greedy
@@ -79,23 +82,23 @@ trait DecideAction {
 #[derive(Debug, Clone, Copy)]
 struct SearchGoal {}
 
-impl DecideState for SearchGoal {
-    fn decide_state(&self, now_position: Coordinate2d, next_position: Coordinate2d) -> Result<Coordinate2d, usize> {
+impl DecideNextState for SearchGoal {
+    fn decide_next_state(&self, now_position: Coordinate2d, next_position: Coordinate2d) -> Result<Coordinate2d, usize> {
         unimplemented!()
     }
 }
 
 // decide state depending on subject
-trait DecideState {
-    fn decide_state(&self, now_position: Coordinate2d, next_position: Coordinate2d) -> Result<Coordinate2d, usize>;
+trait DecideNextState {
+    fn decide_next_state(&self, now_position: Coordinate2d, next_position: Coordinate2d) -> Result<Coordinate2d, usize>;
 }
 
-fn q_search_goal(
+fn q_search_goal1(
     start: Coordinate2d,
     goal: Coordinate2d,
-    action_determiner: Rc<RefCell<dyn DecideAction>>,
-    state_determiner: Rc<dyn DecideState>
+    action_determiner: Rc<RefCell<dyn DecideAction>>
 ) {
+    let t = 0;
     unimplemented!();
 }
 
@@ -109,8 +112,9 @@ fn serch_goal_1(episode: usize) {
     let epsiron = 0.75;
     let action_determiner = Rc::new(RefCell::new(EpsironGreedy::new(epsiron, q.clone())));
     let state_determiner = Rc::new(SearchGoal{});
+    let mut alpha = 0.5;
 
-    q_search_goal(start, goal, action_determiner.clone(), state_determiner);
+    // q_search_goal(start, goal, action_determiner.clone(), state_determiner, &mut alpha);
 
     for _ in 1..episode {
         //
