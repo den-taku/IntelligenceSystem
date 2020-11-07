@@ -13,8 +13,8 @@ use rand::Rng;
 // position
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Coordinate2d {
-    x: usize,
-    y: usize,
+    x: isize,
+    y: isize,
 }
 
 impl Coordinate2d {
@@ -22,7 +22,7 @@ impl Coordinate2d {
     where
         T: ToPrimitive
     {
-        Coordinate2d{ x: T::to_usize(&cdn1).unwrap(), y: T::to_usize(&cdn2).unwrap() }
+        Coordinate2d{ x: T::to_isize(&cdn1).unwrap(), y: T::to_isize(&cdn2).unwrap() }
     }
 }
 
@@ -38,21 +38,22 @@ impl QValue {
         QValue {value: [[init; 4]; 36], reinforcement_signals: *signals, discount_rate}
     }
     fn q_learning(&mut self, leaning_rate: LearningRate, now_position: &Coordinate2d, next_action: Coordinate2d, next_position: Coordinate2d, reinforcment_signal: f64) {
-        let past_value = self.value[now_position.x + now_position.y * 6][
-            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
-            else { now_position.x - next_action.x + 2}
+        let past_value = self.value[(now_position.x + now_position.y * 6) as usize][
+            if now_position.x == next_action.x { (next_action.y - now_position.y + 1) as usize}
+            else { (now_position.x - next_action.x + 2) as usize}
         ];
         let alpha = leaning_rate.value();
-        let next_value = self.value[next_position.x + next_position.y * 6].iter().fold(0.0, |max, e| { if max >= *e { max } else { *e } });
-        self.value[now_position.x + now_position.y * 6][
-            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
-            else { now_position.x - next_action.x + 2}
+        println!("in q_learning {} {}", next_position.x, next_position.y);
+        let next_value = self.value[(next_position.x + next_position.y * 6) as usize].iter().fold(0.0, |max, e| { if max >= *e { max } else { *e } });
+        self.value[(now_position.x + now_position.y * 6) as usize][
+            if now_position.x == next_action.x { (next_action.y - now_position.y + 1) as usize}
+            else { (now_position.x - next_action.x + 2) as usize }
         ] = (1.0 - alpha) * past_value + alpha * (reinforcment_signal * self.discount_rate * next_value);
     }
     fn get_reiforcement_signal(&self, from_position: &Coordinate2d, to_position: &Coordinate2d) -> f64 {
-        self.reinforcement_signals[from_position.x + from_position.y * 6][
-            if from_position.x == to_position.x { to_position.y - from_position.y + 1}
-            else { from_position.x - to_position.x + 2}
+        self.reinforcement_signals[(from_position.x + from_position.y * 6) as usize][
+            if from_position.x == to_position.x { (to_position.y - from_position.y + 1) as usize }
+            else { (from_position.x - to_position.x + 2) as usize }
         ]
     }
     pub fn q_search_goal(
@@ -62,7 +63,7 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        times: usize // initialize as 1usize
+        times: isize // initialize as 1isize
     ) {
         let mut now_position = start;
         self.q_serch_goal_inner(&mut now_position, goal, action_determiner.clone(), next_state_determiner.clone(), learning_rate, times);
@@ -75,13 +76,17 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        mut times: usize
+        mut times: isize
     ) {
         loop{
             if *now_position == goal { return; }
-            let next_action = action_determiner.borrow().decide_action(&now_position);
-            let next_position = next_state_determiner.decide_next_state(&now_position, next_action);
+            println!("loop");
+            let next_action = action_determiner.borrow().decide_action(&now_position, self.clone());
+            println!("get next action");
+            let next_position = next_state_determiner.decide_next_state(&now_position, next_action, self.clone());
+            println!("get next position");
             let reinfocement_signal = self.get_reiforcement_signal(&now_position, &next_action);
+            println!("get reignforcement signal");
             self.q_learning(*learning_rate, now_position, next_action, next_position, reinfocement_signal);
             *now_position = next_position;
             times += 1;
@@ -98,7 +103,7 @@ impl LearningRate {
     pub fn new(init: f64, time_constant: f64) -> Self {
         LearningRate(init, time_constant)
     }
-    fn update(&mut self, times: usize) {
+    fn update(&mut self, times: isize) {
         let e = 2.71828182846f64;
         let new_rate = 2.0 - e.powf(times as f64 / self.1);
         self.0 = if new_rate > 0.0 { new_rate } else { 0.001 }; // learning rate defined
@@ -111,15 +116,15 @@ impl LearningRate {
 // decide next action with ε-Greedy
 pub struct EpsironGreedy {
     epsiron: f64,
-    q_value: Rc<RefCell<QValue>>
+    // q_value: Rc<RefCell<QValue>>
 }
 
 impl EpsironGreedy {
-    pub fn new(epsiron: f64, q_value: Rc<RefCell<QValue>>) -> Self {
+    pub fn new(epsiron: f64/* , q_value: Rc<RefCell<QValue>>*/) -> Self {
         if !(0.0 < epsiron && epsiron < 1.0) {
             panic!("EpsironGreedy::new needs epsiron: 0 < ε < 1");
         }
-        EpsironGreedy{epsiron, q_value}
+        EpsironGreedy{epsiron, /* q_value*/ }
     }
     pub fn update_epsiron(&mut self, new_value: f64) {
             if !(0.0 < new_value && new_value < 1.0) {
@@ -130,9 +135,10 @@ impl EpsironGreedy {
 }
 
 impl DecideAction for EpsironGreedy {
-    fn decide_action(&self, now_position: &Coordinate2d) -> Coordinate2d{
-        let f = |i: usize, position: &Coordinate2d| -> Coordinate2d {
+    fn decide_action(&self, now_position: &Coordinate2d, q_value: QValue) -> Coordinate2d{
+        let f = |i: isize, position: &Coordinate2d| -> Coordinate2d {
             if i % 2 == 0 {
+                println!("{}, {}, {}", position.x, position.y, i);
                 Coordinate2d::new(position.x, position.y + i - 1)
             } else {
                 Coordinate2d::new(position.x + i - 2, position.y)
@@ -140,18 +146,22 @@ impl DecideAction for EpsironGreedy {
         };
         let mut rng = rand::thread_rng();
         let probability = rng.gen::<f64>();
+        println!("get values");
         let mut values = [
-            (self.q_value.borrow().value[now_position.x + now_position.y * 6][0], 0usize),
-            (self.q_value.borrow().value[now_position.x + now_position.y * 6][1], 3usize),
-            (self.q_value.borrow().value[now_position.x + now_position.y * 6][2], 2usize),
-            (self.q_value.borrow().value[now_position.x + now_position.y * 6][3], 1usize),
+            (q_value.value[(now_position.x + now_position.y * 6) as usize][0].clone(), 0isize),
+            (q_value.value[(now_position.x + now_position.y * 6) as usize][1].clone(), 3isize),
+            (q_value.value[(now_position.x + now_position.y * 6) as usize][2].clone(), 2isize),
+            (q_value.value[(now_position.x + now_position.y * 6) as usize][3].clone(), 1isize),
         ];
+        println!("end get value");
         values.sort_by(|b, a| a.0.partial_cmp(&b.0).unwrap());
 
         let first_range = 1.0 - self.epsiron;
         let second_range = 1.0 + self.epsiron * 2.0 / 3.0;
         let third_range = 1.0 + self.epsiron * 1.0 / 3.0;
         let _fourth_range = 1.0;
+
+        println!("end method");
 
         if 0.0 <= probability && probability <= first_range {
             f(values[0].1, now_position)
@@ -173,26 +183,28 @@ impl DecideAction for EpsironGreedy {
 
 // decide next action using ε-Greedy, softmax, and so-on.
 pub trait DecideAction {
-    fn decide_action(&self, now_position: &Coordinate2d) -> Coordinate2d;
+    fn decide_action(&self, now_position: &Coordinate2d, q_value: QValue) -> Coordinate2d;
     fn update_parameter(&mut self, new_value: f64);
 }
 
 #[derive(Clone)]
 pub struct SearchGoal {
-    q_value: Rc<RefCell<QValue>>
+    // q_value: Rc<RefCell<QValue>>
 }
 
 impl SearchGoal {
-    pub fn new(q_value: Rc<RefCell<QValue>>) -> Self {
-        SearchGoal{q_value}
+    pub fn new(/*q_value: Rc<RefCell<QValue>>*/) -> Self {
+        SearchGoal{}
     }
 }
 
 impl DecideNextState for SearchGoal {
-    fn decide_next_state(&self, now_position: &Coordinate2d, next_action: Coordinate2d) -> Coordinate2d {
-        let reinforcement_signal = self.q_value.borrow().value[now_position.x + now_position.y * 6][
-            if now_position.x == next_action.x { next_action.y - now_position.y + 1}
-            else { now_position.x - next_action.x + 2}
+    fn decide_next_state(&self, now_position: &Coordinate2d, next_action: Coordinate2d, q_value: QValue) -> Coordinate2d {
+        println!("{:?}", now_position);
+        println!("{:?}", next_action);
+        let reinforcement_signal = q_value.value[(now_position.x + now_position.y * 6) as usize][
+            if now_position.x == next_action.x { (next_action.y - now_position.y + 1) as usize }
+            else { (2 + now_position.x - next_action.x) as usize }
         ];
         if reinforcement_signal == -0.1 {
             *now_position
@@ -204,14 +216,14 @@ impl DecideNextState for SearchGoal {
 
 // decide state depending on subject
 pub trait DecideNextState {
-    fn decide_next_state(&self, now_position: &Coordinate2d, next_position: Coordinate2d) -> Coordinate2d;
+    fn decide_next_state(&self, now_position: &Coordinate2d, next_position: Coordinate2d, q_value: QValue) -> Coordinate2d;
 }
 
 // q learning for 1 episode
 
 
 // episode : 1-index
-// fn serch_goal_1(episode: usize) {
+// fn serch_goal_1(episode: isize) {
 //     //initialize Q value
 //     let reinforcement_signals = maze::get_maze1();
 //     let q = Rc::new(RefCell::new(QValue::new(&reinforcement_signals)));
@@ -245,20 +257,20 @@ mod test{
     #[test]
     #[should_panic(expected = "EpsironGreedy::update_epsiron needs epsion: 0 < ε < 1")]
     fn test_epsiron_greedy_update_epsiron() {
-        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
+        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, /*Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9)))*/);
         dummy_epsiron_greedy.update_epsiron(8.0);
     }
 
     #[test]
     #[should_panic(expected = "EpsironGreedy::update_parameter needs epsion: 0 < ε < 1")]
     fn test_epsiron_greedy_update_parameter_inner() {
-        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
+        let mut dummy_epsiron_greedy = EpsironGreedy::new(0.1, /*Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9)))*/);
         dummy_epsiron_greedy.update_parameter(8.0);
     }
     
     #[test]
     #[should_panic(expected = "EpsironGreedy::new needs epsiron: 0 < ε < 1")]
     fn test_epsiron_greedy_new() {
-        let _ = EpsironGreedy::new(1.0, Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9))));
+        let _ = EpsironGreedy::new(1.0, /*Rc::new(RefCell::new(QValue::new(0.0, &[[0.0; 4]; 36], 0.9)))*/);
     }
 }
