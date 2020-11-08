@@ -17,7 +17,7 @@ fn main() {
     let action_determiner = Rc::new(RefCell::new(EpsironGreedy::new(epsiron)));
     let next_state_determiner = Rc::new(SearchGoal::new());
     let mut learning_rate1 = LearningRate::new(1.0, 700.0);
-    let mut times = 1isize;
+    let mut times = 1usize;
     q.borrow_mut().q_search_goal(start, goal1, action_determiner.clone(), next_state_determiner.clone(), &mut learning_rate1, times);
 
 }
