@@ -9,12 +9,12 @@ use maze::get_maze1;
 use search_goal::*;
 
 fn main() {
-    let reinforcement_signals1 = maze::get_maze1();
+    let reinforcement_signals1 = get_maze1();
     let q1 = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals1, 0.9)));
     let start1 = Coordinate2d::new(0, 0);
     let goal11 = Coordinate2d::new(4, 3);
     let mut epsiron1 = 0.75;
-    let mut action_determiner1 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron1)));
+    let action_determiner1 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron1)));
     let next_state_determiner1 = Rc::new(SearchGoal::new());
     let mut learning_rate11 = LearningRate::new(1.0, 700.0);
     let mut times1 = 1usize;
@@ -36,7 +36,7 @@ fn main() {
     let goal12 = Coordinate2d::new(4, 3);
     let goal22 = Coordinate2d::new(1, 4);
     let mut epsiron2 = 0.75;
-    let mut action_determiner2 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron2)));
+    let action_determiner2 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron2)));
     let next_state_determiner2 = Rc::new(SearchGoal::new());
     let mut learning_rate12 = LearningRate::new(1.0, 700.0);
     let mut times2 = 1usize;

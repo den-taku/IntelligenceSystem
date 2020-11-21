@@ -77,7 +77,7 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        mut times: &mut usize
+        times: &mut usize
     ) {
         loop{
             println!("times: {}", times);
@@ -120,7 +120,7 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        mut times: &mut usize
+        times: &mut usize
     ) {
         loop{
             println!("times: {}", *times);
@@ -164,7 +164,7 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        mut times: &mut usize
+        times: &mut usize
     ) {
         loop{
             println!("times: {}", times);
@@ -209,7 +209,7 @@ impl QValue {
         action_determiner: Rc<RefCell<dyn DecideAction>>,
         next_state_determiner: Rc<dyn DecideNextState>,
         learning_rate: &mut LearningRate,
-        mut times: &mut usize
+        times: &mut usize
     ) {
         loop{
             println!("times: {}", *times);
@@ -309,9 +309,9 @@ impl DecideAction for EpsironGreedy {
         let third_range = 1.0 - self.epsiron * 1.0 / 3.0;
         let _fourth_range = 1.0;
 
-        for i in 0..4 {
-            // println!("{:?}", values[i]);
-        }
+        // for i in 0..4 {
+        //     // println!("{:?}", values[i]);
+        // }
         // println!("probability is {}.", probability);
 
         // println!("end method");
