@@ -28,7 +28,7 @@ fn main() {
                 &mut learning_rate11,
                 &mut times1,
             );
-            epsiron1 -= 0.0065;
+            epsiron1 -= 0.0066;
             action_determiner1.borrow_mut().update_epsiron(epsiron1);
         }
     }
@@ -43,9 +43,10 @@ fn main() {
         );
     }
     println!("{}", q1.borrow());
+    println!("distance: {}", q1.borrow().distance1());
 
     let reinforcement_signals2 = maze::get_maze2();
-    let q2 = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals2, 0.9)));
+    let q2 = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals2, 0.90)));
     let start2 = Coordinate2d::new(0, 0);
     let goal12 = Coordinate2d::new(4, 3);
     let goal22 = Coordinate2d::new(1, 4);
@@ -81,4 +82,5 @@ fn main() {
         );
     }
     println!("{}", q2.borrow());
+    println!("distance : {}", q2.borrow().distance2());
 }

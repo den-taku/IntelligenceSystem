@@ -289,6 +289,94 @@ impl QValue {
             learning_rate.update(*times)
         }
     }
+
+    pub fn distance1(&self) -> f64 {
+        (self.value[0][0]-0.).abs() + (self.value[0][1]-1.).abs() + (self.value[0][2]-1.).abs() + (self.value[0][3]-0.).abs()
+        + (self.value[1][0]-0.).abs() + (self.value[1][1]-1.).abs() + (self.value[1][2]-1.).abs() + (self.value[1][3]-0.).abs()
+        + (self.value[2][0]-0.).abs() + (self.value[2][1]-1.).abs() + (self.value[2][2]-1.).abs() + (self.value[2][3]-0.).abs()
+        + (self.value[3][0]-0.).abs() + (self.value[3][1]-1.).abs() + (self.value[3][2]-1.).abs() + (self.value[3][3]-0.).abs()
+        + (self.value[4][0]-0.).abs() + (self.value[4][1]-0.).abs() + (self.value[4][2]-1.).abs() + (self.value[4][3]-0.).abs()
+        + (self.value[5][0]-0.).abs() + (self.value[5][1]-0.).abs() + (self.value[5][2]-1.).abs() + (self.value[5][3]-1.).abs()
+
+        + (self.value[6][0]-0.).abs() + (self.value[6][1]-1.).abs() + (self.value[6][2]-1.).abs() + (self.value[6][3]-0.).abs()
+        + (self.value[7][0]-0.).abs() + (self.value[7][1]-1.).abs() + (self.value[7][2]-1.).abs() + (self.value[7][3]-0.).abs()
+        + (self.value[8][0]-0.).abs() + (self.value[8][1]-1.).abs() + (self.value[8][2]-1.).abs() + (self.value[8][3]-0.).abs()
+        + (self.value[9][0]-0.).abs() + (self.value[9][1]-1.).abs() + (self.value[9][2]-1.).abs() + (self.value[9][3]-0.).abs()
+        + (self.value[10][0]-0.).abs() + (self.value[10][1]-0.).abs() + (self.value[10][2]-1.).abs() + (self.value[10][3]-0.).abs()
+        + (self.value[11][0]-0.).abs() + (self.value[11][1]-0.).abs() + (self.value[11][2]-1.).abs() + (self.value[11][3]-1.).abs()
+
+        + (self.value[12][0]-0.).abs() + (self.value[12][1]-1.).abs() + (self.value[12][2]-1.).abs() + (self.value[12][3]-0.).abs()
+        + (self.value[13][0]-0.).abs() + (self.value[13][1]-1.).abs() + (self.value[13][2]-1.).abs() + (self.value[13][3]-0.).abs()
+        + (self.value[14][0]-0.).abs() + (self.value[14][1]-1.).abs() + (self.value[14][2]-1.).abs() + (self.value[14][3]-0.).abs()
+        + (self.value[15][0]-0.).abs() + (self.value[15][1]-1.).abs() + (self.value[15][2]-1.).abs() + (self.value[15][3]-0.).abs()
+        + (self.value[16][0]-0.).abs() + (self.value[16][1]-1.).abs() + (self.value[16][2]-1.).abs() + (self.value[16][3]-0.).abs()
+        + (self.value[17][0]-0.).abs() + (self.value[17][1]-0.).abs() + (self.value[17][2]-1.).abs() + (self.value[17][3]-1.).abs()
+
+        + (self.value[18][0]-0.).abs() + (self.value[18][1]-1.).abs() + (self.value[18][2]-0.).abs() + (self.value[18][3]-0.).abs()
+        + (self.value[19][0]-0.).abs() + (self.value[19][1]-1.).abs() + (self.value[19][2]-0.).abs() + (self.value[19][3]-0.).abs()
+        + (self.value[20][0]-0.).abs() + (self.value[20][1]-1.).abs() + (self.value[20][2]-0.).abs() + (self.value[20][3]-0.).abs()
+        + (self.value[21][0]-0.).abs() + (self.value[21][1]-1.).abs() + (self.value[21][2]-0.).abs() + (self.value[21][3]-0.).abs()
+        + (self.value[22][0]-0.).abs() + (self.value[22][1]-0.).abs() + (self.value[22][2]-0.).abs() + (self.value[22][3]-0.).abs()
+        + (self.value[23][0]-0.).abs() + (self.value[23][1]-0.).abs() + (self.value[23][2]-0.).abs() + (self.value[23][3]-1.).abs()
+
+        + (self.value[24][0]-1.).abs() + (self.value[24][1]-1.).abs() + (self.value[24][2]-0.).abs() + (self.value[24][3]-0.).abs()
+        + (self.value[25][0]-1.).abs() + (self.value[25][1]-1.).abs() + (self.value[25][2]-0.).abs() + (self.value[25][3]-0.).abs()
+        + (self.value[26][0]-1.).abs() + (self.value[26][1]-1.).abs() + (self.value[26][2]-0.).abs() + (self.value[26][3]-0.).abs()
+        + (self.value[27][0]-1.).abs() + (self.value[27][1]-1.).abs() + (self.value[27][2]-0.).abs() + (self.value[27][3]-0.).abs()
+        + (self.value[28][0]-1.).abs() + (self.value[28][1]-1.).abs() + (self.value[28][2]-0.).abs() + (self.value[28][3]-0.).abs()
+        + (self.value[29][0]-1.).abs() + (self.value[29][1]-0.).abs() + (self.value[29][2]-0.).abs() + (self.value[29][3]-1.).abs() 
+
+        + (self.value[30][0]-1.).abs() + (self.value[30][1]-1.).abs() + (self.value[30][2]-0.).abs() + (self.value[30][3]-0.).abs()
+        + (self.value[31][0]-1.).abs() + (self.value[31][1]-1.).abs() + (self.value[31][2]-0.).abs() + (self.value[31][3]-0.).abs()
+        + (self.value[32][0]-1.).abs() + (self.value[32][1]-1.).abs() + (self.value[32][2]-0.).abs() + (self.value[32][3]-0.).abs()
+        + (self.value[33][0]-1.).abs() + (self.value[33][1]-1.).abs() + (self.value[33][2]-0.).abs() + (self.value[33][3]-0.).abs()
+        + (self.value[34][0]-1.).abs() + (self.value[34][1]-1.).abs() + (self.value[34][2]-0.).abs() + (self.value[34][3]-0.).abs()
+        + (self.value[35][0]-1.).abs() + (self.value[35][1]-0.).abs() + (self.value[35][2]-0.).abs() + (self.value[35][3]-1.).abs()    
+    }
+
+    pub fn distance2(&self) -> f64 {
+        (self.value[0][0]-0.).abs() + (self.value[0][1]-0.).abs() + (self.value[0][2]-1.).abs() + (self.value[0][3]-0.).abs()
+        + (self.value[1][0]-0.).abs() + (self.value[1][1]-1.).abs() + (self.value[1][2]-0.).abs() + (self.value[1][3]-1.).abs()
+        + (self.value[2][0]-0.).abs() + (self.value[2][1]-1.).abs() + (self.value[2][2]-0.).abs() + (self.value[2][3]-0.).abs()
+        + (self.value[3][0]-0.).abs() + (self.value[3][1]-1.).abs() + (self.value[3][2]-0.).abs() + (self.value[3][3]-0.).abs()
+        + (self.value[4][0]-0.).abs() + (self.value[4][1]-0.).abs() + (self.value[4][2]-0.).abs() + (self.value[4][3]-0.).abs()
+        + (self.value[5][0]-0.).abs() + (self.value[5][1]-0.).abs() + (self.value[5][2]-1.).abs() + (self.value[5][3]-0.).abs()
+
+        + (self.value[6][0]-0.).abs() + (self.value[6][1]-0.).abs() + (self.value[6][2]-1.).abs() + (self.value[6][3]-0.).abs()
+        + (self.value[7][0]-0.).abs() + (self.value[7][1]-0.).abs() + (self.value[7][2]-0.).abs() + (self.value[7][3]-0.).abs()
+        + (self.value[8][0]-0.).abs() + (self.value[8][1]-0.).abs() + (self.value[8][2]-0.).abs() + (self.value[8][3]-0.).abs()
+        + (self.value[9][0]-0.).abs() + (self.value[9][1]-0.).abs() + (self.value[9][2]-0.).abs() + (self.value[9][3]-0.).abs()
+        + (self.value[10][0]-0.).abs() + (self.value[10][1]-0.).abs() + (self.value[10][2]-0.).abs() + (self.value[10][3]-0.).abs()
+        + (self.value[11][0]-0.).abs() + (self.value[11][1]-0.).abs() + (self.value[11][2]-1.).abs() + (self.value[11][3]-0.).abs()
+
+        + (self.value[12][0]-0.).abs() + (self.value[12][1]-1.).abs() + (self.value[12][2]-0.).abs() + (self.value[12][3]-0.).abs()
+        + (self.value[13][0]-0.).abs() + (self.value[13][1]-1.).abs() + (self.value[13][2]-0.).abs() + (self.value[13][3]-0.).abs()
+        + (self.value[14][0]-0.).abs() + (self.value[14][1]-1.).abs() + (self.value[14][2]-0.).abs() + (self.value[14][3]-0.).abs()
+        + (self.value[15][0]-0.).abs() + (self.value[15][1]-1.).abs() + (self.value[15][2]-1.).abs() + (self.value[15][3]-0.).abs()
+        + (self.value[16][0]-0.).abs() + (self.value[16][1]-0.).abs() + (self.value[16][2]-1.).abs() + (self.value[16][3]-0.).abs()
+        + (self.value[17][0]-0.).abs() + (self.value[17][1]-0.).abs() + (self.value[17][2]-1.).abs() + (self.value[17][3]-1.).abs()
+
+        + (self.value[18][0]-1.).abs() + (self.value[18][1]-1.).abs() + (self.value[18][2]-1.).abs() + (self.value[18][3]-0.).abs()
+        + (self.value[19][0]-1.).abs() + (self.value[19][1]-0.).abs() + (self.value[19][2]-1.).abs() + (self.value[19][3]-0.).abs()
+        + (self.value[20][0]-0.).abs() + (self.value[20][1]-0.).abs() + (self.value[20][2]-0.).abs() + (self.value[20][3]-0.).abs()
+        + (self.value[21][0]-0.).abs() + (self.value[21][1]-1.).abs() + (self.value[21][2]-0.).abs() + (self.value[21][3]-0.).abs()
+        + (self.value[22][0]-0.).abs() + (self.value[22][1]-0.).abs() + (self.value[22][2]-0.).abs() + (self.value[22][3]-0.).abs()
+        + (self.value[23][0]-0.).abs() + (self.value[23][1]-0.).abs() + (self.value[23][2]-0.).abs() + (self.value[23][3]-1.).abs()
+
+        + (self.value[24][0]-0.).abs() + (self.value[24][1]-1.).abs() + (self.value[24][2]-0.).abs() + (self.value[24][3]-0.).abs()
+        + (self.value[25][0]-0.).abs() + (self.value[25][1]-0.).abs() + (self.value[25][2]-0.).abs() + (self.value[25][3]-0.).abs()
+        + (self.value[26][0]-0.).abs() + (self.value[26][1]-0.).abs() + (self.value[26][2]-0.).abs() + (self.value[26][3]-0.).abs()
+        + (self.value[27][0]-1.).abs() + (self.value[27][1]-0.).abs() + (self.value[27][2]-0.).abs() + (self.value[27][3]-0.).abs()
+        + (self.value[28][0]-0.).abs() + (self.value[28][1]-0.).abs() + (self.value[28][2]-0.).abs() + (self.value[28][3]-0.).abs()
+        + (self.value[29][0]-0.).abs() + (self.value[29][1]-0.).abs() + (self.value[29][2]-0.).abs() + (self.value[29][3]-0.).abs() 
+
+        + (self.value[30][0]-1.).abs() + (self.value[30][1]-1.).abs() + (self.value[30][2]-0.).abs() + (self.value[30][3]-0.).abs()
+        + (self.value[31][0]-1.).abs() + (self.value[31][1]-1.).abs() + (self.value[31][2]-0.).abs() + (self.value[31][3]-0.).abs()
+        + (self.value[32][0]-0.).abs() + (self.value[32][1]-1.).abs() + (self.value[32][2]-0.).abs() + (self.value[32][3]-0.).abs()
+        + (self.value[33][0]-1.).abs() + (self.value[33][1]-0.).abs() + (self.value[33][2]-0.).abs() + (self.value[33][3]-0.).abs()
+        + (self.value[34][0]-0.).abs() + (self.value[34][1]-0.).abs() + (self.value[34][2]-0.).abs() + (self.value[34][3]-1.).abs()
+        + (self.value[35][0]-0.).abs() + (self.value[35][1]-0.).abs() + (self.value[35][2]-0.).abs() + (self.value[35][3]-1.).abs()    
+    }
 }
 
 impl Display for QValue {
