@@ -4,7 +4,7 @@ mod search_goal;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use maze::get_maze1;
+use maze::{get_maze1, get_maze2};
 
 use search_goal::*;
 
@@ -16,10 +16,10 @@ fn main() {
     let mut epsiron1 = 0.75;
     let action_determiner1 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron1)));
     let next_state_determiner1 = Rc::new(SearchGoal::new());
-    let mut learning_rate11 = LearningRate::new(1.0, 700.0);
+    let mut learning_rate11 = LearningRate::new(1.0, 200.0);
     let mut times1 = 1usize;
     {
-        for _ in 0..100 {
+        for _ in 0..400 {
             q1.borrow_mut().q_search_goal(
                 start1,
                 goal11,
@@ -28,7 +28,7 @@ fn main() {
                 &mut learning_rate11,
                 &mut times1,
             );
-            epsiron1 -= 0.0066;
+            epsiron1 -= 0.0016;
             action_determiner1.borrow_mut().update_epsiron(epsiron1);
         }
     }
@@ -45,18 +45,18 @@ fn main() {
     println!("{}", q1.borrow());
     println!("distance: {}", q1.borrow().distance1());
 
-    let reinforcement_signals2 = maze::get_maze2();
+    let reinforcement_signals2 = get_maze2();
     let q2 = Rc::new(RefCell::new(QValue::new(0.0, &reinforcement_signals2, 0.90)));
     let start2 = Coordinate2d::new(0, 0);
     let goal12 = Coordinate2d::new(4, 3);
     let goal22 = Coordinate2d::new(1, 4);
-    let mut epsiron2 = 0.75;
+    let mut epsiron2 = 0.10;
     let action_determiner2 = Rc::new(RefCell::new(EpsironGreedy::new(epsiron2)));
     let next_state_determiner2 = Rc::new(SearchGoal::new());
     let mut learning_rate12 = LearningRate::new(1.0, 700.0);
     let mut times2 = 1usize;
     {
-        for _ in 0..100 {
+        for _ in 0..800 {
             q2.borrow_mut().q_search_goal2(
                 start2,
                 goal12,
@@ -66,7 +66,7 @@ fn main() {
                 &mut learning_rate12,
                 &mut times2,
             );
-            epsiron2 -= 0.0065;
+            // epsiron2 -= 0.0016;
             action_determiner2.borrow_mut().update_epsiron(epsiron2);
         }
     }
