@@ -1,0 +1,12 @@
+line 0 0 400 400
+line 400 0 0 400
+red
+circle 200.0 200E0
+blue
+fillCircle 100 100
+green
+square 300 300
+yellow
+fillSquare 300 100
+message this is a demo
+pause
