@@ -5,12 +5,12 @@ use std::str::FromStr;
 
 fn main() {
     // read data from mnist_em.csv, which has 21770 handwritten characters' images that consists of 28x28 pixels.
-    let mut data = read_csv::<f64>("mnist_em.csv");
+    let data = read_csv::<f64>("mnist_em.csv");
     assert!(data.iter().all(|m| m.len() == 28 * 28));
     assert_eq!(data.len(), 21770);
 
     // normalize data
-    data = data.iter().map(|e| e / 255f64).collect();
+    let data: Vec<Matrix<f64>> = data.iter().map(|e| e / 255f64).collect();
     assert!(data.iter().all(|m| m.len() == 28 * 28));
     assert_eq!(data.len(), 21770);
 }
