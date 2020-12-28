@@ -17,6 +17,7 @@ fn main() {
         let v: Vec<f64> = line.split(',').map(|s| f64::from_str(s).unwrap()).collect();
         data.push(Matrix::append(28, 28, v));
     }
-
+    
+    // println!("{}", data.len());
     // println!("{:?}", data);
 }
