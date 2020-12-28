@@ -672,6 +672,12 @@ pub struct Matrix<T> {
     array: Vec<T>, //                [* * * * *]
 }
 
+impl<T> Matrix<T> {
+    pub fn len(&self) -> usize {
+        self.n * self.m
+    }
+}
+
 // pub trait Algebra<T> {
 //     fn new(n: usize, m: usize) -> Self;
 //     fn append(n: usize, m : usize) -> Self;

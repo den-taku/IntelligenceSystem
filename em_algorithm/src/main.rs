@@ -19,6 +19,7 @@ fn main() {
         data.push(Matrix::append(28, 28, v));
     }
     
-    // println!("{}", data.len());
+    assert!(data.iter().all(|m| m.len() == 28 * 28));
+    assert_eq!(data.len(), 21770);
     // println!("{:?}", data);
 }
