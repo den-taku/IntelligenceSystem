@@ -11,6 +11,7 @@ fn main() {
 
     for (index, line) in reader.lines().enumerate() {
         if index == 0 {
+            // first line is for title
             continue;
         }
         let line = line.unwrap();
