@@ -11,7 +11,7 @@ fn main() {
     let reader = BufReader::new(file);
 
     let mut data = Vec::new();
-    //
+    
     for (index, line) in reader.lines().enumerate() {
         if index == 0 {
             continue;
@@ -21,6 +21,5 @@ fn main() {
         data.push(Matrix::append(28, 28, v));
     }
 
-    println!("{:?}", data);
-    println!("Hello, world!");
+    // println!("{:?}", data);
 }
