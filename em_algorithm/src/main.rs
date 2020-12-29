@@ -9,5 +9,11 @@ fn main() {
     // normalize data
     let data = normalize_data(data, 255f64);
 
-    let em = EM::new(data.clone());
+    // define mixed number and variance
+    let mixed_number = 3;
+    let variance = 0.01;
+
+    let em = EM::new(mixed_number, variance, data.clone());
+
+    println!("mixed_number: {}, vaiance: {}", em.mixed_number(), em.variance());
 }
