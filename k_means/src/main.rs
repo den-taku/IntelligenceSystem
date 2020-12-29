@@ -1,4 +1,5 @@
 use k_means::data_manage::*;
+use k_means::k_means::*;
 
 fn main() {
     // read data
@@ -12,4 +13,9 @@ fn main() {
 
     // define mixed number
     let mixed_number = 3;
+
+    let mut k_means = KMeans::new(mixed_number, training_data);
+
+    let parameters = k_means.estimate();
+    println!("{:?}", parameters);
 }
