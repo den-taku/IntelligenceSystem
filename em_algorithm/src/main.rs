@@ -9,17 +9,21 @@ fn main() {
     // normalize data
     let data = normalize_data(data, 255f64);
 
+    // split data for learing and for test
+    let (training_data, test_data) = split_data_at(21760, data);
+
     // define mixed number, variance, and allowable error
     let mixed_number = 3;
     let variance = 0.01;
     let allowable_error = 0.1e-9;
 
     // initialize structure for em algorithm
-    let mut em = EM::new(mixed_number, variance, allowable_error ,data.clone());
+    let mut em = EM::new(mixed_number, variance, allowable_error ,training_data.clone());
 
-    println!("mixed_number: {}, vaiance: {}", em.mixed_number(), em.variance());
-    println!("parameters: {:?}", em.parameters());
-
+    // use em algorithm
     let parameters = em.estimate();
-    println!("{:?}", parameters);
+
+    // test 
+    test_data;
+    parameters;
 }

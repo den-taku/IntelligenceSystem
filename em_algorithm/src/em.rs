@@ -27,14 +27,18 @@ impl<T> EM<T> {
     }
 }
 
-impl<T> EM<T> {
+impl<T: Clone> EM<T> {
     fn maximize(&mut self) -> bool {
+        // let condition = self.judge_convergence(vec![Matrix::new(0, 0)]);
         unimplemented!()
     }
 }
 
-impl<T> EM<T> {
+impl<T: Clone> EM<T> {
     fn judge_convergence(&self, new_parameters: Vec<Matrix<T>>) -> bool {
+        if self.parameters().len() != new_parameters.len() {
+            panic!("cannot calcurate convergence condition because of new parameters size error.")
+        }
         unimplemented!()
     }
 }
