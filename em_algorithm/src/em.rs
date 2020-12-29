@@ -56,7 +56,7 @@ where
         // 2.calcurate sufficient statistics
 
         let mut one_i = vec![F::from_f64(0.0).unwrap(); self.mixed_number()];
-        let mut x_i = vec![Matrix::<F>::new(self.data[0].n(), self.data[0].m())];
+        let mut x_i = vec![Matrix::<F>::new(self.data[0].n(), self.data[0].m()); self.mixed_number()];
 
         // sigma
         for t in 0..self.data.len() {
