@@ -907,7 +907,7 @@ where
         size.sqrt()
     }
 
-    pub fn norm2_row<F>(&self) -> F 
+    pub fn norm2_row<F>(&self) -> F
     where
         F: Float + Zero + FromPrimitive + Add<Output = F>,
     {
@@ -920,7 +920,6 @@ where
         }
         size
     }
-    
 
     pub fn is_square(&self) -> bool {
         self.n == self.m
