@@ -23,7 +23,7 @@ fn main() {
     // use em algorithm
     let parameters = em.estimate();
 
-    // test 
+    // TODO: test 
     test_data;
     parameters;
 }
