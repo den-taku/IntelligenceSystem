@@ -4,8 +4,11 @@ use std::io::{BufRead, BufReader};
 use std::ops::Div;
 use std::str::FromStr;
 
-pub fn split_data_at<T: Clone>(index: usize, data: Vec<Matrix<T>>) -> (Vec<Matrix<T>>, Vec<Matrix<T>>) {
-   (data[..index].to_vec(), data[index..].to_vec()) 
+pub fn split_data_at<T: Clone>(
+    index: usize,
+    data: Vec<Matrix<T>>,
+) -> (Vec<Matrix<T>>, Vec<Matrix<T>>) {
+    (data[..index].to_vec(), data[index..].to_vec())
 }
 
 pub fn normalize_data<T>(data: Vec<Matrix<T>>, norm: T) -> Vec<Matrix<T>>

@@ -18,13 +18,18 @@ fn main() {
     let allowable_error = 0.01;
 
     // initialize structure for em algorithm
-    let mut em = EM::new(mixed_number, variance, allowable_error ,training_data.clone());
+    let mut em = EM::new(
+        mixed_number,
+        variance,
+        allowable_error,
+        training_data.clone(),
+    );
 
     // use em algorithm
     let parameters = em.estimate();
     println!("{:?}", parameters);
 
-    // TODO: test 
+    // TODO: test
     // test_data;
     // parameters;
 }
