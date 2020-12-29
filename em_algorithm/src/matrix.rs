@@ -678,6 +678,15 @@ impl<T> Matrix<T> {
     }
 }
 
+impl<T> Matrix<T> {
+    pub fn n(&self) -> usize {
+        self.n
+    }
+    pub fn m(&self) -> usize {
+        self.m
+    }
+}
+
 // pub trait Algebra<T> {
 //     fn new(n: usize, m: usize) -> Self;
 //     fn append(n: usize, m : usize) -> Self;

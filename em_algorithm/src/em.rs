@@ -17,7 +17,7 @@ where
 {
     pub fn estimate(&mut self) -> Vec<Matrix<F>> {
         while {
-            self.expect();
+            let (one_i, x_i) = self.expect();
             self.maximize()
         } {}
         self.parameters()
@@ -29,11 +29,53 @@ where
     F: Float + FromPrimitive + ToPrimitive
 {
     // Expectation step
-    fn expect(&mut self) {
-        unimplemented!()
+    fn expect(&mut self) -> (Vec<F>, Vec<Matrix<F>>) {
+        // calcurate posterior probability
+
+        // for numerator
+        let mut p_vec = Vec::new();
+        // for denominator
+        let mut sigma_p = vec![F::from_f64(0.0).unwrap(); self.mixed_number()];
+
+        // calcurate numerators and addassign to denominator 
+        for t in 0..self.data.len() {
+            for i in 0..self.mixed_number() {
+                let p = self.calcurate_p(t, i);
+                p_vec.push(p);
+                sigma_p[i] = sigma_p[i] + p;
+            }
+        }
+
+        // divide numerator by denominator
+        for t in 0..self.data.len() {
+            for i in 0..self.mixed_number() {
+                p_vec[3 * t + i] = p_vec[3 * t + i] / sigma_p[i];
+            }
+        }
+
+        // calcurate sufficient statistics
+
+        let mut one_i = vec![F::from_f64(0.0).unwrap(); self.mixed_number()];
+        let mut x_i = vec![Matrix::<F>::new(self.data[0].n(), self.data[0].m())];
+
+        // sigma
+        for t in 0..self.data.len() {
+            for i in 0..self.mixed_number() {
+                one_i[i] = one_i[i] + p_vec[3 * t + i];
+                x_i[i] = &x_i[i] + &(&self.data[t] + p_vec[3 * t + i]);
+            }
+        }
+
+        // 1/T
+        for i in 0..self.mixed_number() {
+            one_i[i] = one_i[i] / F::from_f64((self.data.len()).to_f64().unwrap()).unwrap();
+            x_i[i] = &x_i[i] / F::from_f64((self.data.len()).to_f64().unwrap()).unwrap(); 
+        }
+        
+        (one_i, x_i)
     }
 
-    pub fn calcurate_p(&self, t: usize, i: usize) -> F {
+    fn calcurate_p(&self, t: usize, i: usize) -> F {
         let x: f64 = -((&self.data[t] - &self.parameters()[i]).norm2_row::<f64>() / 2.0f64 / (self.variance()).to_f64().unwrap() / (self.variance()).to_f64().unwrap());
         F::from_f64((x).exp()).unwrap()
     }
