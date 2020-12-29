@@ -14,7 +14,7 @@ fn main() {
 
     // define mixed number, variance, and allowable error
     let mixed_number = 3;
-    let variance = 0.01;
+    let variance = 100.0;
     let allowable_error = 0.1e-9;
 
     // initialize structure for em algorithm

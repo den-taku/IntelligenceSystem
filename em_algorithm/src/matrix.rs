@@ -898,6 +898,21 @@ where
         size.sqrt()
     }
 
+    pub fn norm2_row<F>(&self) -> F 
+    where
+        F: Float + Zero + FromPrimitive + Add<Output = F>,
+    {
+        let mut size = F::zero();
+        for i in 0..self.n * self.m {
+            size = size.clone()
+                + F::from(self.array[i].clone())
+                    .unwrap()
+                    .powf(F::from_f32(2.0).unwrap())
+        }
+        size
+    }
+    
+
     pub fn is_square(&self) -> bool {
         self.n == self.m
     }

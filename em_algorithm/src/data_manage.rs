@@ -48,7 +48,7 @@ where
 }
 
 #[cfg(test)]
-mod tests_em {
+mod tests_data_manage {
     use super::*;
 
     #[test]

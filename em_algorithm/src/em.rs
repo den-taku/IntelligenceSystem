@@ -1,18 +1,21 @@
 use crate::matrix::*;
+use num_traits::Float;
 use rand::Rng;
 
 #[derive(Debug, Clone)]
-pub struct EM<T>{
+pub struct EM<F>{
     mixed_number: usize,
-    variance: T,
-    allowable_error: f64,
-    data: Vec<Matrix<T>>,
-    parameters: Vec<Matrix<T>>
+    variance: F,
+    allowable_error: F,
+    data: Vec<Matrix<F>>,
+    parameters: Vec<Matrix<F>>
 }
 
-impl<T: Clone> EM<T> {
-    // judge convergency, too?
-    pub fn estimate(&mut self) -> Vec<Matrix<T>> {
+impl<F> EM<F> 
+where
+    F: Clone + Float + FromPrimitive
+{
+    pub fn estimate(&mut self) -> Vec<Matrix<F>> {
         while {
             self.expect();
             self.maximize()
@@ -21,21 +24,31 @@ impl<T: Clone> EM<T> {
     }
 }
 
-impl<T> EM<T> {
+impl<F> EM<F> 
+where
+    F: Float + FromPrimitive + ToPrimitive
+{
+    // Expectation step
     fn expect(&mut self) {
         unimplemented!()
     }
+
+    pub fn calcurate_p(&self, t: usize, i: usize) -> F {
+        let x: f64 = -((&self.data[t] - &self.parameters()[i]).norm2_row::<f64>() / 2.0f64 / (self.variance()).to_f64().unwrap() / (self.variance()).to_f64().unwrap());
+        F::from_f64((x).exp()).unwrap()
+    }
 }
 
-impl<T: Clone> EM<T> {
+impl<F: Clone> EM<F> {
+    // Maximization step
     fn maximize(&mut self) -> bool {
         // let condition = self.judge_convergence(vec![Matrix::new(0, 0)]);
         unimplemented!()
     }
 }
 
-impl<T: Clone> EM<T> {
-    fn judge_convergence(&self, new_parameters: Vec<Matrix<T>>) -> bool {
+impl<F: Clone> EM<F> {
+    fn judge_convergence(&self, new_parameters: Vec<Matrix<F>>) -> bool {
         if self.parameters().len() != new_parameters.len() {
             panic!("cannot calcurate convergence condition because of new parameters size error.")
         }
@@ -43,8 +56,8 @@ impl<T: Clone> EM<T> {
     }
 }
 
-impl<T: Clone> EM<T> {
-    pub fn new(mixed_number: usize, variance: T, allowable_error: f64, data: Vec<Matrix<T>>) -> Self {
+impl<F: Clone> EM<F> {
+    pub fn new(mixed_number: usize, variance: F, allowable_error: F, data: Vec<Matrix<F>>) -> Self {
         // choose initial parameters.
         let mut rng = rand::thread_rng();
 
@@ -64,17 +77,22 @@ impl<T: Clone> EM<T> {
     }
 }
 
-impl<T> EM<T> {
+impl<F> EM<F> {
     pub fn mixed_number(&self) -> usize {
         self.mixed_number
     }
 }
 
-impl<T: Clone> EM<T> {
-    pub fn variance(&self) -> T {
+impl<F: Clone> EM<F> {
+    pub fn variance(&self) -> F {
         self.variance.clone()
     }
-    pub fn parameters(&self) -> Vec<Matrix<T>> {
+    pub fn parameters(&self) -> Vec<Matrix<F>> {
         self.parameters.clone()
     }
+}
+
+#[cfg(test)]
+mod test_em {
+    use super::*;
 }
