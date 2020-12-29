@@ -2,7 +2,7 @@ use k_means::data_manage::*;
 
 fn main() {
     // read data
-    let data = read_csv::<f64>("data/mnist_em.scv");
+    let data = read_csv::<f64>("data/mnist_em.csv");
 
     // normalize data
     let data = normalize_data(data, 255f64);
