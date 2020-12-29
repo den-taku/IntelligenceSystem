@@ -25,8 +25,23 @@ where
     }
 }
 
-impl<F> KMeans<F> {
+impl<F> KMeans<F> 
+where
+    F: Float + FromPrimitive
+{
     fn classify(&self) -> Vec<usize> {
+        let mut class = Vec::new();
+        for t in 0..self.data.len() {
+            let norm_v: Vec<(usize, F)> = vec![F::from_f64(0.0).unwrap(); self.mixed_number()]
+                .iter()
+                .enumerate()
+                .map(|e| (e.0, *e.1))
+                .collect();
+            for i in 0..self.mixed_number() {
+                //
+            }
+        }
+
         unimplemented!()
     }
 }

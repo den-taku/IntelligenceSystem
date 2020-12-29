@@ -52,7 +52,8 @@ where
         // divide numerator by denominator
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
-                p_vec[3 * t + i] = p_vec[3 * t + i] / sigma_p[i];
+                p_vec[self.mixed_number() * t + i] =
+                    p_vec[self.mixed_number() * t + i] / sigma_p[i];
             }
         }
 
@@ -65,7 +66,7 @@ where
         // sigma
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
-                one_i[i] = one_i[i] + p_vec[3 * t + i];
+                one_i[i] = one_i[i] + p_vec[self.mixed_number() * t + i];
                 x_i[i] = &x_i[i] + &(&self.data[t] + p_vec[3 * t + i]);
             }
         }
