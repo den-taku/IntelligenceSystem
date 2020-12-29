@@ -16,7 +16,10 @@ where
     F: Clone + Float + FromPrimitive
 {
     pub fn estimate(&mut self) -> Vec<Matrix<F>> {
+        let mut count = 1;
         while {
+            println!("{} times...", count);
+            count += 1;
             let (one_i, x_i) = self.expect();
             self.maximize(one_i, x_i)
         } {}
@@ -119,7 +122,7 @@ where
         }
 
         // check condition
-        error < self.allowable_error
+        !(error < self.allowable_error)
     }
 }
 
