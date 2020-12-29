@@ -6,7 +6,7 @@ use std::ops::Div;
 
 fn main() {
     // read data from mnist_em.csv, which has 21770 handwritten characters' images that consists of 28x28 pixels.
-    let data = read_csv::<f64>("mnist_em.csv");
+    let data = read_csv::<f64>("data/mnist_em.csv");
     assert!(data.iter().all(|m| m.len() == 28 * 28));
     assert_eq!(data.len(), 21770);
 
@@ -61,14 +61,14 @@ mod tests_em {
 
     #[test]
     fn for_read_csv() {
-        let data = read_csv::<f64>("mnist_em.csv");
+        let data = read_csv::<f64>("data/mnist_em.csv");
         assert!(data.iter().all(|m| m.len() == 28 * 28));
         assert_eq!(data.len(), 21770);
     }
 
     #[test]
     fn for_normalize_data() {
-        let data = read_csv::<f64>("mnist_em.csv");
+        let data = read_csv::<f64>("data/mnist_em.csv");
         let data = normalize_data(data, 255f64);
         assert!(data.iter().all(|m| m.len() == 28 * 28));
         assert_eq!(data.len(), 21770);
