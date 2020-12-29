@@ -54,3 +54,23 @@ where
     }
     data
 }
+
+#[cfg(test)]
+mod tests_em {
+    use super::*;
+
+    #[test]
+    fn for_read_csv() {
+        let data = read_csv::<f64>("mnist_em.csv");
+        assert!(data.iter().all(|m| m.len() == 28 * 28));
+        assert_eq!(data.len(), 21770);
+    }
+
+    #[test]
+    fn for_normalize_data() {
+        let data = read_csv::<f64>("mnist_em.csv");
+        let data = normalize_data(data, 255f64);
+        assert!(data.iter().all(|m| m.len() == 28 * 28));
+        assert_eq!(data.len(), 21770);
+    }
+}
