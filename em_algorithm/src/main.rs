@@ -2,6 +2,7 @@ use em_algorithm::matrix::*;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
+use std::ops::Div;
 
 fn main() {
     // read data from mnist_em.csv, which has 21770 handwritten characters' images that consists of 28x28 pixels.
@@ -10,9 +11,17 @@ fn main() {
     assert_eq!(data.len(), 21770);
 
     // normalize data
-    let data: Vec<Matrix<f64>> = data.iter().map(|e| e / 255f64).collect();
+    let data = normalize_data(data, 255f64);
     assert!(data.iter().all(|m| m.len() == 28 * 28));
     assert_eq!(data.len(), 21770);
+}
+
+fn normalize_data<T>(data: Vec<Matrix<T>>, norm: T) -> Vec<Matrix<T>>
+where 
+    T: Div<Output = T> + Clone + Copy
+{
+    let data: Vec<Matrix<T>> = data.iter().map(|e| e / norm).collect();
+    data
 }
 
 fn read_csv<T>(filename: &str) -> Vec<Matrix<T>>
