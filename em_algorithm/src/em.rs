@@ -30,7 +30,7 @@ where
 {
     // Expectation step
     fn expect(&mut self) -> (Vec<F>, Vec<Matrix<F>>) {
-        // calcurate posterior probability
+        // 1.calcurate posterior probability
 
         // for numerator
         let mut p_vec = Vec::new();
@@ -53,7 +53,7 @@ where
             }
         }
 
-        // calcurate sufficient statistics
+        // 2.calcurate sufficient statistics
 
         let mut one_i = vec![F::from_f64(0.0).unwrap(); self.mixed_number()];
         let mut x_i = vec![Matrix::<F>::new(self.data[0].n(), self.data[0].m())];
