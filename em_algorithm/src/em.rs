@@ -5,6 +5,7 @@ use rand::Rng;
 pub struct EM<T>{
     mixed_number: usize,
     variance: T,
+    allowable_error: f64,
     data: Vec<Matrix<T>>,
     parameters: Vec<Matrix<T>>
 }
@@ -12,27 +13,34 @@ pub struct EM<T>{
 impl<T: Clone> EM<T> {
     // judge convergency, too?
     pub fn estimate(&mut self) -> Vec<Matrix<T>> {
-        while self.expect() {
-            self.maximize();
-        }
+        while {
+            self.expect();
+            self.maximize()
+        } {}
         self.parameters()
     }
 }
 
 impl<T> EM<T> {
-    fn expect(&mut self) -> bool {
+    fn expect(&mut self) {
         unimplemented!()
     }
 }
 
 impl<T> EM<T> {
-    fn maximize(&mut self) {
+    fn maximize(&mut self) -> bool {
+        unimplemented!()
+    }
+}
+
+impl<T> EM<T> {
+    fn judge_convergence(&self, new_parameters: Vec<Matrix<T>>) -> bool {
         unimplemented!()
     }
 }
 
 impl<T: Clone> EM<T> {
-    pub fn new(mixed_number: usize, variance: T, data: Vec<Matrix<T>>) -> Self {
+    pub fn new(mixed_number: usize, variance: T, allowable_error: f64, data: Vec<Matrix<T>>) -> Self {
         // choose initial parameters.
         let mut rng = rand::thread_rng();
 
@@ -45,6 +53,7 @@ impl<T: Clone> EM<T> {
         EM {
             mixed_number,
             variance,
+            allowable_error,
             data,
             parameters
         }
