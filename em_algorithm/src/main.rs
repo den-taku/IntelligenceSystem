@@ -21,7 +21,8 @@ fn main() {
     let mut em = EM::new(mixed_number, variance, allowable_error ,training_data.clone());
 
     // use em algorithm
-    // let parameters = em.estimate();
+    let parameters = em.estimate();
+    println!("{:?}", parameters);
 
     // TODO: test 
     // test_data;

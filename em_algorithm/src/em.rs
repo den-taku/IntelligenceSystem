@@ -18,7 +18,7 @@ where
     pub fn estimate(&mut self) -> Vec<Matrix<F>> {
         while {
             let (one_i, x_i) = self.expect();
-            self.maximize()
+            self.maximize(one_i, x_i)
         } {}
         self.parameters()
     }
@@ -75,26 +75,51 @@ where
         (one_i, x_i)
     }
 
+    // calcurate exp(-1/2σ^2 |x(t) - μi|^2)
     fn calcurate_p(&self, t: usize, i: usize) -> F {
         let x: f64 = -((&self.data[t] - &self.parameters()[i]).norm2_row::<f64>() / 2.0f64 / (self.variance()).to_f64().unwrap() / (self.variance()).to_f64().unwrap());
         F::from_f64((x).exp()).unwrap()
     }
 }
 
-impl<F: Clone> EM<F> {
+impl<F> EM<F> 
+where
+    F: Float + FromPrimitive
+{
     // Maximization step
-    fn maximize(&mut self) -> bool {
-        // let condition = self.judge_convergence(vec![Matrix::new(0, 0)]);
-        unimplemented!()
+    fn maximize(&mut self, one_i: Vec<F>, x_i: Vec<Matrix<F>>) -> bool {
+        let past_parameters = self.parameters();
+        let mut new_parameters = Vec::new(); 
+
+        // update parameters
+        for i in 0..self.mixed_number() {
+            new_parameters.push(&x_i[i] / one_i[i].clone());
+        }
+
+        self.parameters = new_parameters;
+
+        self.judge_convergence(past_parameters)
     }
 }
 
-impl<F: Clone> EM<F> {
-    fn judge_convergence(&self, new_parameters: Vec<Matrix<F>>) -> bool {
-        if self.parameters().len() != new_parameters.len() {
+impl<F> EM<F> 
+where
+    F: Float + FromPrimitive
+{
+    fn judge_convergence(&self, past_parameters: Vec<Matrix<F>>) -> bool {
+        // check parameter's size
+        if self.parameters().len() != past_parameters.len() {
             panic!("cannot calcurate convergence condition because of new parameters size error.")
         }
-        unimplemented!()
+
+        // calcurate error
+        let mut error = F::from_f64(0.0).unwrap();
+        for i in 0..self.mixed_number() {
+            error = error + (&self.parameters()[i] - &past_parameters[i]).norm2();
+        }
+
+        // check condition
+        error < self.allowable_error
     }
 }
 
