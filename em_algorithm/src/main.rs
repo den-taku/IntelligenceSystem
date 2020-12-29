@@ -13,7 +13,12 @@ fn main() {
     let mixed_number = 3;
     let variance = 0.01;
 
-    let em = EM::new(mixed_number, variance, data.clone());
+    // initialize structure for em algorithm
+    let mut em = EM::new(mixed_number, variance, data.clone());
 
     println!("mixed_number: {}, vaiance: {}", em.mixed_number(), em.variance());
+    println!("parameters: {:?}", em.parameters());
+
+    let parameters = em.estimate();
+    println!("{:?}", parameters);
 }
