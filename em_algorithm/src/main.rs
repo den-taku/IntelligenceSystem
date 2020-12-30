@@ -1,4 +1,5 @@
 use em_algorithm::data_manage::*;
+use em_algorithm::draw::*;
 use em_algorithm::em::*;
 
 fn main() {
@@ -27,6 +28,10 @@ fn main() {
 
     // use em algorithm
     let parameters = em.estimate();
+
+    for i in 0..em.mixed_number() {
+        let _ = write_image(&format!("image{}of{}", i, em.mixed_number()), parameters[i].clone());
+    }
     println!("{:?}", parameters);
 
     // TODO: test
