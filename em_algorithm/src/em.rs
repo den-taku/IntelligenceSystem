@@ -67,7 +67,7 @@ where
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
                 one_i[i] = one_i[i] + p_vec[self.mixed_number() * t + i];
-                x_i[i] = &x_i[i] + &(&self.data[t] * p_vec[3 * t + i]);
+                x_i[i] = &x_i[i] + &(&self.data[t] * p_vec[self.mixed_number() * t + i]);
             }
         }
 

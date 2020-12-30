@@ -30,7 +30,7 @@ fn main() {
     let parameters = em.estimate();
 
     for i in 0..em.mixed_number() {
-        let _ = write_image(&format!("images/image{}of{}.png", i, em.mixed_number()), parameters[i].clone());
+        let _ = write_image(&format!("images/305image{}of{}.png", i, em.mixed_number()), parameters[i].clone());
     }
     println!("{:?}", parameters);
 
