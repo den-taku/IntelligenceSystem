@@ -41,7 +41,7 @@ where
             for i in 0..self.mixed_number() {
                 norm_v[i].1 = (&self.data[t] - &self.parameters[i]).norm2();
             }
-            norm_v.sort_by(|b, a| a.1.partial_cmp(&b.1).unwrap());
+            norm_v.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
             class.push(norm_v[0].0);
         }
         class
@@ -72,7 +72,7 @@ where
             errors = errors + e;
             println!("  {}'s error: {}", i, e.to_f64().unwrap());
         }
-        // println!("      errors: {}", errors.to_f64().unwrap());
+        println!("      errors: {}", errors.to_f64().unwrap());
         errors > self.allowable_error()
     }
 }
