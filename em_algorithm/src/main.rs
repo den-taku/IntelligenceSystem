@@ -10,7 +10,7 @@ fn main() {
     let data = normalize_data(data, 255f64);
 
     // split data for learing and for test
-    let (training_data, test_data) = split_data_at(21760, data);
+    let (training_data, _test_data) = split_data_at(21770, data);
 
     // define mixed number, variance, and allowable error
     let mixed_number = 3;
