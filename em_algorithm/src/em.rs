@@ -38,14 +38,14 @@ where
         // for numerator
         let mut p_vec = Vec::new();
         // for denominator
-        let mut sigma_p = vec![F::from_f64(0.0).unwrap(); self.mixed_number()];
+        let mut sigma_p = vec![F::from_f64(0.0).unwrap(); self.data.len()];
 
         // calcurate numerators and addassign to denominator
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
                 let p = self.calcurate_p(t, i);
                 p_vec.push(p);
-                sigma_p[i] = sigma_p[i] + p;
+                sigma_p[t] = sigma_p[t] + p;
             }
         }
 
@@ -53,7 +53,7 @@ where
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
                 p_vec[self.mixed_number() * t + i] =
-                    p_vec[self.mixed_number() * t + i] / sigma_p[i];
+                    p_vec[self.mixed_number() * t + i] / sigma_p[t];
             }
         }
 
@@ -67,7 +67,7 @@ where
         for t in 0..self.data.len() {
             for i in 0..self.mixed_number() {
                 one_i[i] = one_i[i] + p_vec[self.mixed_number() * t + i];
-                x_i[i] = &x_i[i] + &(&self.data[t] + p_vec[3 * t + i]);
+                x_i[i] = &x_i[i] + &(&self.data[t] * p_vec[3 * t + i]);
             }
         }
 
@@ -80,7 +80,7 @@ where
         (one_i, x_i)
     }
 
-    // calcurate exp(-1/2σ^2 |x(t) - μi|^2)
+    // calcurate f(t, i) = exp(-1/2σ^2 |x(t) - μi|^2)
     fn calcurate_p(&self, t: usize, i: usize) -> F {
         let x: f64 = -((&self.data[t] - &self.parameters()[i]).norm2_row::<f64>()
             / 2.0f64
@@ -125,6 +125,8 @@ where
         for i in 0..self.mixed_number() {
             error = error + (&self.parameters()[i] - &past_parameters[i]).norm2();
         }
+
+        println!("      error size is {}", error.to_f64().unwrap());
 
         // check condition
         !(error < self.allowable_error)

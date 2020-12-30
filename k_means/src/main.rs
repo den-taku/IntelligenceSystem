@@ -13,7 +13,7 @@ fn main() {
 
     // define mixed number and allowable error
     let mixed_number = 3;
-    let allowable_error = 1.0;
+    let allowable_error = 6.7;
 
     let mut k_means = KMeans::new(mixed_number, allowable_error, training_data);
 

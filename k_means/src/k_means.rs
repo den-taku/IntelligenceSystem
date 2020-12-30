@@ -67,7 +67,9 @@ where
         self.parameters = new_parameters;
 
         for i in 0..self.mixed_number() {
-            if (&old_parameters[i] - &self.parameters()[i]).norm2::<F>() > self.allowable_error() {
+            let e = (&old_parameters[i] - &self.parameters()[i]).norm2::<F>();
+            if e > self.allowable_error() {
+                println!("  {}'s error is {}", i, e.to_f64().unwrap());
                 return true;
             }
         }
