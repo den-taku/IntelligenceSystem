@@ -17,7 +17,7 @@ where
     pub fn estimate(&mut self) -> Vec<Matrix<F>> {
         let mut count = 1;
         while {
-            println!("{} times... now learning...", count);
+            println!("{} times... ", count);
             count += 1;
             let class = self.classify();
             self.updata_parameters(class)
@@ -66,14 +66,14 @@ where
         let old_parameters = self.parameters();
         self.parameters = new_parameters;
 
+        let mut errors = F::from_f64(0.0).unwrap();
         for i in 0..self.mixed_number() {
-            let e = (&old_parameters[i] - &self.parameters()[i]).norm2::<F>();
-            if e > self.allowable_error() {
-                println!("  {}'s error is {}", i, e.to_f64().unwrap());
-                return true;
-            }
+            let e = (&old_parameters[i] - &self.parameters()[i]).norm2::<F>(); 
+            errors = errors + e;
+            println!("  {}'s error: {}", i, e.to_f64().unwrap());
         }
-        false
+        // println!("      errors: {}", errors.to_f64().unwrap());
+        errors > self.allowable_error()
     }
 }
 
