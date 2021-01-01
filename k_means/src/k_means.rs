@@ -14,15 +14,22 @@ impl<F> KMeans<F>
 where
     F: Float + FromPrimitive,
 {
-    pub fn estimate(&mut self) -> Vec<Matrix<F>> {
+    pub fn estimate(&mut self) -> (Vec<Matrix<F>>, Vec<(f64, f64)>) {
         let mut count = 1;
+        let mut data: Vec<f64> = Vec::new();
         while {
             println!("{} times... ", count);
             count += 1;
             let class = self.classify();
-            self.updata_parameters(class)
+            self.updata_parameters(class, &mut data)
         } {}
-        self.parameters()
+        (
+            self.parameters(),
+            data.iter()
+                .enumerate()
+                .map(|e| ((e.0).to_f64().unwrap(), *e.1))
+                .collect(),
+        )
     }
 }
 
@@ -48,11 +55,11 @@ where
     }
 }
 
-impl<F> KMeans<F> 
+impl<F> KMeans<F>
 where
-    F: Float + FromPrimitive
+    F: Float + FromPrimitive,
 {
-    fn updata_parameters(&mut self, class: Vec<usize>) -> bool {
+    fn updata_parameters(&mut self, class: Vec<usize>, data: &mut Vec<f64>) -> bool {
         let mut new_parameters: Vec<Matrix<F>> =
             vec![Matrix::new(self.data[0].n(), self.data[0].m()); self.mixed_number()];
         let mut count = vec![0usize; self.mixed_number()];
@@ -68,10 +75,11 @@ where
 
         let mut errors = F::from_f64(0.0).unwrap();
         for i in 0..self.mixed_number() {
-            let e = (&old_parameters[i] - &self.parameters()[i]).norm2::<F>(); 
+            let e = (&old_parameters[i] - &self.parameters()[i]).norm2::<F>();
             errors = errors + e;
             println!("  {}'s error: {}", i, e.to_f64().unwrap());
         }
+        data.push(errors.to_f64().unwrap());
         println!("      errors: {}", errors.to_f64().unwrap());
         errors > self.allowable_error()
     }
