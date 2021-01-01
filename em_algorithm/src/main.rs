@@ -38,7 +38,7 @@ fn main() {
     // write parameters to png
     for i in 0..em.mixed_number() {
         let _ = write_image(
-            &format!("images/testimage{}of{}.png", i, em.mixed_number()),
+            &format!("images/v{}_image{}of{}.png", variance, i, em.mixed_number()),
             parameters[i].clone(),
         );
     }
@@ -59,8 +59,4 @@ fn main() {
         "blue",
         data,
     );
-
-    // TODO: test
-    // test_data;
-    // parameters;
 }
