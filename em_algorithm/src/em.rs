@@ -15,15 +15,22 @@ impl<F> EM<F>
 where
     F: Clone + Float + FromPrimitive,
 {
-    pub fn estimate(&mut self) -> Vec<Matrix<F>> {
+    pub fn estimate(&mut self) -> (Vec<Matrix<F>>, Vec<(f64, f64)>) {
         let mut count = 1;
+        let mut data: Vec<f64> = Vec::new();
         while {
             println!("{} times...", count);
             count += 1;
             let (one_i, x_i) = self.expect();
-            self.maximize(one_i, x_i)
+            self.maximize(one_i, x_i, &mut data)
         } {}
-        self.parameters()
+        (
+            self.parameters(),
+            data.iter()
+                .enumerate()
+                .map(|e| ((e.0).to_f64().unwrap(), *e.1))
+                .collect(),
+        )
     }
 }
 
@@ -95,7 +102,7 @@ where
     F: Float + FromPrimitive,
 {
     // Maximization step
-    fn maximize(&mut self, one_i: Vec<F>, x_i: Vec<Matrix<F>>) -> bool {
+    fn maximize(&mut self, one_i: Vec<F>, x_i: Vec<Matrix<F>>, mut data: &mut Vec<f64>) -> bool {
         let past_parameters = self.parameters();
         let mut new_parameters = Vec::new();
 
@@ -106,7 +113,7 @@ where
 
         self.parameters = new_parameters;
 
-        self.judge_convergence(past_parameters)
+        self.judge_convergence(past_parameters, &mut data)
     }
 }
 
@@ -114,7 +121,7 @@ impl<F> EM<F>
 where
     F: Float + FromPrimitive,
 {
-    fn judge_convergence(&self, past_parameters: Vec<Matrix<F>>) -> bool {
+    fn judge_convergence(&self, past_parameters: Vec<Matrix<F>>, data: &mut Vec<f64>) -> bool {
         // check parameter's size
         if self.parameters().len() != past_parameters.len() {
             panic!("cannot calcurate convergence condition because of new parameters size error.")
@@ -127,6 +134,7 @@ where
         }
 
         println!("      error size is {}", error.to_f64().unwrap());
+        data.push(error.to_f64().unwrap());
 
         // check condition
         !(error < self.allowable_error)
