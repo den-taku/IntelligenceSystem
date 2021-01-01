@@ -20,7 +20,7 @@ fn main() {
     let (training_data, _test_data) = split_data_at(21770, data);
 
     // define mixed number, variance, and allowable error
-    let mixed_number = 2;
+    let mixed_number = 9;
     let variance = 1.0;
     let allowable_error = 0.01;
 
