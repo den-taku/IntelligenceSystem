@@ -8,7 +8,6 @@ fn main() {
     let mut clock = Clock::new();
     let start = clock.now();
 
-
     // read data from mnist_em.csv, which has
     // 21770 handwritten characters' images that consists of 28x28 pixels.
     let data = read_csv::<f64>("data/mnist_em.csv");
@@ -36,7 +35,10 @@ fn main() {
     let parameters = em.estimate();
 
     for i in 0..em.mixed_number() {
-        let _ = write_image(&format!("images/testimage{}of{}.png", i, em.mixed_number()), parameters[i].clone());
+        let _ = write_image(
+            &format!("images/testimage{}of{}.png", i, em.mixed_number()),
+            parameters[i].clone(),
+        );
     }
     // println!("{:?}", parameters);
 

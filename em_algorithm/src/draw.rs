@@ -16,7 +16,9 @@ pub fn write_image<F: Clone + FromPrimitive + Float>(
         .collect::<Vec<u8>>();
 
     let encoder = PngEncoder::new(output);
-    encoder.encode(&pixels, 28u32, 28u32, ColorType::L8).expect("encode error.");
+    encoder
+        .encode(&pixels, 28u32, 28u32, ColorType::L8)
+        .expect("encode error.");
 
     Ok(())
 }
