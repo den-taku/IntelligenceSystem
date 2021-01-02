@@ -1,0 +1,2 @@
+*.java linguist-language=OpenStep-Property-List
+*.class linguist-language=OpenStep-Property-List
